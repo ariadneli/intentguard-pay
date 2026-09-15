@@ -2,7 +2,7 @@
 
 **Repository:** https://github.com/ariadneli/intentguard-pay
 
-> Public deployment URL will be added after the repository is published.
+> No public hosted deployment is currently provided. Run the dashboard locally using the instructions below.
 
 IntentGuard Pay is a public, self-contained research prototype for deterministic authorization around agentic payments. It asks whether an autonomous payment planner can remain useful when money only moves after a separate, machine-checkable layer validates a declared payment envelope, matches the proposed execution, and emits auditable evidence.
 
@@ -160,7 +160,7 @@ npm run verify:eip712
 - The deterministic fixture scenarios exposed by the frontend and backend.
 - The original 11-fixture benchmark and mechanism-level baseline comparison.
 - EIP-712 typed-data hashing and signer recovery against a shared TypeScript/Python golden vector.
-- An observed MetaMask `eth_signTypedData_v4` flow on the deployed dashboard: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the session-local nonce was already consumed.
+- An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the session-local nonce was already consumed.
 - Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
 - The read-only Sepolia receipt verification workflow.
 

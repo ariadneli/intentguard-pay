@@ -52,7 +52,7 @@ Observed on 2026-09-14:
 
 ## Observed MetaMask flow
 
-The deployed dashboard was exercised with a dedicated empty MetaMask account on the Sepolia domain. The account reviewed and signed the structured `PaymentIntent` through `eth_signTypedData_v4`; the dashboard recovered the declared payer and returned `AUTO_APPROVE`. Replaying the same signature preserved the signer, domain, execution, resource-hash, and freshness checks but failed `NONCE_UNUSED`, returning `DENY`. This manual smoke test broadcasts no transaction and adds no benchmark points.
+The prototype dashboard was exercised locally with a dedicated empty MetaMask account on the Sepolia domain. The account reviewed and signed the structured `PaymentIntent` through `eth_signTypedData_v4`; the dashboard recovered the declared payer and returned `AUTO_APPROVE`. Replaying the same signature preserved the signer, domain, execution, resource-hash, and freshness checks but failed `NONCE_UNUSED`, returning `DENY`. This manual smoke test broadcasts no transaction and adds no benchmark points.
 
 ## Claim boundary
 
