@@ -7,8 +7,16 @@ from pydantic import BaseModel
 
 from intent_engine import IntentEngine, benchmark, run_demo
 from eip712 import SignedPaymentIntent, SignedProposedExecution
+from nonce_store import InMemoryNonceStore, SQLiteNonceStore
 
-ENGINE = IntentEngine()
+NONCE_STORE_KIND = os.getenv("INTENTGUARD_NONCE_STORE", "memory").strip().lower()
+if NONCE_STORE_KIND == "sqlite":
+    nonce_path = os.getenv("INTENTGUARD_NONCE_SQLITE_PATH", "intentguard_nonces.sqlite3")
+    NONCE_STORE = SQLiteNonceStore(nonce_path)
+else:
+    NONCE_STORE = InMemoryNonceStore()
+
+ENGINE = IntentEngine(nonce_store=NONCE_STORE)
 
 app = FastAPI(
     title="IntentGuard Pay API",

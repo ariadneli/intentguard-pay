@@ -249,7 +249,7 @@ class SignedIntentProperties(unittest.TestCase):
         self.assertEqual(first.decision, "HUMAN_REVIEW")
         self.assertEqual(second.decision, "HUMAN_REVIEW")
         self.assertIsNone(first.tx_hash)
-        self.assertNotIn(f"{intent.payer}:{intent.nonce}", engine.used_nonces)
+        self.assertTrue(engine.nonce_store.is_unused(intent.payer, intent.nonce))
 
     @settings(max_examples=MAX_EXAMPLES, deadline=None)
     @given(

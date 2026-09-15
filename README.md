@@ -74,7 +74,7 @@ Core controls in this prototype:
 2. **Domain and signer validation**: the backend reconstructs the typed-data digest, enforces the IntentGuard Pay Sepolia domain, and requires the recovered signer to equal the declared payer.
 3. **Deterministic policy checks**: chain allowlist, token allowlist, recipient allowlist, amount ceiling, execution match, expiry, and replay-state checks.
 4. **Execution matching**: the proposed call must match the signed envelope before the wallet-release step.
-5. **Ephemeral replay guard**: automatically approved executions consume an **in-memory, payer-scoped** nonce record; rejected and pending-review requests do not consume state.
+5. **Replay guard (nonce store)**: `AUTO_APPROVE` consumes a payer-scoped nonce via a pluggable `NonceStore` (default: in-memory; optional: SQLite durable store so replay denial persists across restarts). `DENY` and `HUMAN_REVIEW` do not consume state.
 6. **Audit receipt**: typed-data digest, recovered signer, execution hash, policy outcome, timestamp, and evidence hash.
 7. **Read-only Sepolia verifier**: browser-only reconstruction of public transaction and receipt evidence from a public RPC endpoint.
 
@@ -86,7 +86,7 @@ Core controls in this prototype:
 | **Mechanism-level baseline comparisons** (policy gates, execution binding, replay state), computed from a shared deterministic fixture runner. | Any external product performance claim or end-to-end equivalence to Safe, Permit2, ZeroDev, or other mature systems. |
 | A deterministic adversarial fixture benchmark with fixed, reproducible numbers. | Production security, live-fund safety, or exhaustive coverage of the attack space. |
 | Read-only receipt reconstruction for Sepolia transactions. | Smart-account / [EIP-4337](https://eips.ethereum.org/EIPS/eip-4337) deployment, paymasters, session keys, or on-chain enforcement. |
-| A process-local replay guard that demonstrates consume-once logic in prototype form. | Persistent nonce storage, cross-process replay protection, or a durable used-intent registry. |
+| A payer-scoped consume-once nonce store with optional SQLite durability (research-v2). | Distributed replay atomicity across replicas, coupling nonce consumption to on-chain execution, or production-grade durability guarantees. |
 
 ## Benchmark results
 
@@ -147,6 +147,19 @@ HYPOTHESIS_MAX_EXAMPLES=1000 python -m unittest
 PORT=8000 python main.py
 ```
 
+Replay store configuration (research-v2):
+
+- Default (process-local): `INTENTGUARD_NONCE_STORE=memory`
+- Durable across restarts: `INTENTGUARD_NONCE_STORE=sqlite` with `INTENTGUARD_NONCE_SQLITE_PATH=/path/to/intentguard_nonces.sqlite3`
+
+Example:
+
+```bash
+INTENTGUARD_NONCE_STORE=sqlite \
+INTENTGUARD_NONCE_SQLITE_PATH=/tmp/intentguard_nonces.sqlite3 \
+PORT=8000 python main.py
+```
+
 The API accepts browser requests from `http://localhost:5173` and `http://127.0.0.1:5173` by default. For another frontend origin, set the comma-separated `INTENTGUARD_ALLOWED_ORIGINS` environment variable explicitly.
 
 Cross-language EIP-712 vector:
@@ -160,14 +173,15 @@ npm run verify:eip712
 - The deterministic fixture scenarios exposed by the frontend and backend.
 - The original 11-fixture benchmark and mechanism-level baseline comparison.
 - EIP-712 typed-data hashing and signer recovery against a shared TypeScript/Python golden vector.
-- An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the session-local nonce was already consumed.
+- An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the payer--nonce was already consumed (in-memory by default; optionally durable via SQLite in research-v2).
 - Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
+- research-v2 verification-kernel microbenchmarks (memory vs SQLite nonce store) and durable replay tests under `docs/research-v2/`.
 - The read-only Sepolia receipt verification workflow.
 
 ### What is deliberately not claimed
 
 - Production wallet custody guarantees; the dashboard can request and verify `eth_signTypedData_v4` signatures, but it never sends transactions or handles private keys.
-- Persistent replay defense across process restarts.
+- Distributed replay atomicity across replicas; research-v2 demonstrates durable replay denial across restarts using SQLite, but not a replicated deployment guarantee.
 - Live smart-account or on-chain enforcement.
 - Product-level equivalence to mature external payment or wallet systems.
 
@@ -178,7 +192,7 @@ npm run verify:eip712
 - `GET /api/v1/demo/scenarios` — supported local fixture scenarios.
 - `POST /api/v1/demo/run` — run `normal`, `tampered`, or `replay`.
 - `POST /api/v1/signed-intents/validate` — recover and verify an EIP-712 signer, then apply policy, execution-binding, expiry, and replay checks.
-- `POST /api/v1/demo/reset` — reset the in-memory replay state.
+- `POST /api/v1/demo/reset` — reset the current replay state (memory or SQLite nonce store).
 - `GET /api/v1/evaluation` — run deterministic benchmark fixtures.
 - `GET /api/v1/about` — project metadata and attribution.
 
@@ -189,13 +203,16 @@ OpenAPI docs are available at `/docs` when the backend is running.
 ```text
 intentguard-pay-public/
 ├── backend/
+│   ├── bench_overhead.py
 │   ├── eip712.py
 │   ├── intent_engine.py
 │   ├── main.py
+│   ├── nonce_store.py
 │   ├── requirements.txt
 │   ├── requirements-dev.txt
 │   ├── test_eip712.py
-│   └── test_intent_engine.py
+│   ├── test_intent_engine.py
+│   └── test_nonce_store.py
 ├── fixtures/
 │   └── eip712-golden-vector.json
 ├── scripts/
@@ -203,7 +220,9 @@ intentguard-pay-public/
 ├── docs/
 │   ├── evaluation-methodology.md
 │   ├── research-context.md
-│   └── signed-intent-evaluation.md
+│   ├── signed-intent-evaluation.md
+│   └── research-v2/
+│       └── overhead_*.json
 ├── src/
 │   ├── App.tsx
 │   ├── main.tsx

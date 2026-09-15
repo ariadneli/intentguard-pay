@@ -1,0 +1,19 @@
+{
+  "notes": {
+    "consume_nonce": false,
+    "timed_region": "IntentEngine.validate_signed only; input signing excluded"
+  },
+  "result": {
+    "consume_nonce": false,
+    "mean_ms": 7.93868895,
+    "n": 300,
+    "p50_ms": 7.763548999999999,
+    "p95_ms": 9.750163549999998,
+    "store": "memory"
+  },
+  "runtime": {
+    "platform": "Linux-5.4.210.bsk.6-amd64-x86_64-with-glibc2.36",
+    "processor": "",
+    "python": "3.11.9"
+  }
+}

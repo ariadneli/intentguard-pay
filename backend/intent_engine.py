@@ -31,6 +31,7 @@ from eip712 import (
     recover_signer,
     typed_data_digest,
 )
+from nonce_store import InMemoryNonceStore, NonceStore
 
 
 class PaymentIntent(BaseModel):
@@ -151,11 +152,11 @@ class IntentEngine:
     # Chosen to keep the included benign fixtures non-denying.
     execution_policy_tx_limit = 0.05
 
-    def __init__(self) -> None:
-        self.used_nonces: Set[str] = set()
+    def __init__(self, *, nonce_store: Optional[NonceStore] = None) -> None:
+        self.nonce_store = nonce_store or InMemoryNonceStore()
 
     def reset(self) -> None:
-        self.used_nonces.clear()
+        self.nonce_store.reset()
 
     def validate(
         self,
@@ -164,6 +165,7 @@ class IntentEngine:
         consume_nonce: bool = True,
         enabled_checks: Optional[Set[str]] = None,
     ) -> AuditReceipt:
+        nonce_unused = self.nonce_store.is_unused(intent.payer, intent.nonce)
         checks = [
             # Intent-time policy gates
             PolicyCheck(
@@ -234,10 +236,10 @@ class IntentEngine:
             ),
             PolicyCheck(
                 code="NONCE_UNUSED",
-                label="Replay protection (process-local)",
-                passed=intent.nonce not in self.used_nonces,
+                label=self.nonce_store.label(),
+                passed=nonce_unused,
                 detail="Nonce has not been consumed."
-                if intent.nonce not in self.used_nonces
+                if nonce_unused
                 else "Nonce was already consumed by an earlier execution.",
             ),
             # Execution-time policy module (smart account / module style)
@@ -292,13 +294,14 @@ class IntentEngine:
         execution_hash = _canonical_hash(execution.model_dump())
 
         tx_hash = None
-        if decision != "DENY":
+        if decision == "AUTO_APPROVE":
             if consume_nonce:
-                self.used_nonces.add(intent.nonce)
+                self.nonce_store.consume(intent.payer, intent.nonce)
             tx_hash = _canonical_hash(
                 {
                     "intent_hash": intent_hash,
                     "execution_hash": execution_hash,
+                    "payer": intent.payer.lower(),
                     "nonce": intent.nonce,
                 }
             )
@@ -343,8 +346,7 @@ class IntentEngine:
         signature_ok = recovered is not None
         signer_ok = signature_ok and recovered == expected_signer
         fresh = intent.expiry > int(_utc_now().timestamp())
-        replay_key = f"{expected_signer}:{intent.nonce}"
-        nonce_unused = replay_key not in self.used_nonces
+        nonce_unused = self.nonce_store.is_unused(expected_signer, intent.nonce)
         scope_matches = (
             execution.recipient.lower() == intent.recipient.lower()
             and execution.chain_id == intent.chain_id
@@ -443,7 +445,7 @@ class IntentEngine:
             ),
             PolicyCheck(
                 code="NONCE_UNUSED",
-                label="Replay protection (process-local)",
+                label=self.nonce_store.label(),
                 passed=nonce_unused,
                 detail="Nonce has not been consumed."
                 if nonce_unused
@@ -462,11 +464,12 @@ class IntentEngine:
         tx_hash = None
         if decision == "AUTO_APPROVE":
             if consume_nonce:
-                self.used_nonces.add(replay_key)
+                self.nonce_store.consume(expected_signer, intent.nonce)
             tx_hash = _canonical_hash(
                 {
                     "typed_data_digest": digest,
                     "execution_hash": execution_hash,
+                    "payer": expected_signer,
                     "nonce": intent.nonce,
                 }
             )
