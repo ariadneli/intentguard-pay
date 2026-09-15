@@ -10,8 +10,9 @@ Example:
   python3 backend/bench_overhead_matrix.py --out-dir docs/research-v2
 
 Notes:
-- The concurrency experiment uses multiple threads and multiple SQLite connections
-  pointing to the same DB file to model multi-replica contention on a shared store.
+- The concurrency experiments use (a) multiple threads and (b) independently
+  spawned processes, each with its own SQLite connection, all pointing to the same
+  DB file to model contention on a shared durable store.
 - Numbers are platform-dependent; interpret deltas, not absolutes.
 """
 
@@ -19,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import multiprocessing
 import os
 import platform
 import statistics
@@ -99,6 +101,43 @@ def make_signed_fixture(i: int, domain: EIP712Domain) -> tuple[SignedPaymentInte
         calldataHash=intent.resource_hash,
     )
     return signed, execution
+
+
+def serialize_fixture(
+    fixture: tuple[SignedPaymentIntent, SignedProposedExecution]
+) -> dict:
+    signed, execution = fixture
+    return {
+        "intent": signed.intent.model_dump(),
+        "domain": signed.domain.model_dump(),
+        "signature": signed.signature,
+        "execution": execution.model_dump(),
+    }
+
+
+def _multiprocess_sqlite_worker(db_path, payloads, start_barrier, out_queue):
+    """Spawn-safe worker with an independent SQLite connection."""
+
+    engine = IntentEngine(nonce_store=SQLiteNonceStore(db_path))
+    timings_ms: list[float] = []
+    denies = 0
+    start_barrier.wait(timeout=20)
+    for payload in payloads:
+        intent = EIP712PaymentIntent(**payload["intent"])
+        domain = EIP712Domain(**payload["domain"])
+        signed = SignedPaymentIntent(
+            intent=intent,
+            domain=domain,
+            signature=payload["signature"],
+        )
+        execution = SignedProposedExecution(**payload["execution"])
+        t0 = time.perf_counter_ns()
+        receipt = engine.validate_signed(signed, execution, consume_nonce=True)
+        t1 = time.perf_counter_ns()
+        timings_ms.append((t1 - t0) / 1e6)
+        if receipt.decision != "AUTO_APPROVE":
+            denies += 1
+    out_queue.put((timings_ms, denies))
 
 
 def _run_serial(*, store: str, consume_nonce: bool, n: int, sqlite_path: str | None) -> MatrixRow:
@@ -193,6 +232,58 @@ def _run_sqlite_concurrent(*, n_total: int, workers: int, sqlite_path: str) -> M
     )
 
 
+def _run_sqlite_multiprocess(*, n_total: int, workers: int, sqlite_path: str) -> MatrixRow:
+    domain = EXPECTED_DOMAIN
+    fixtures = [serialize_fixture(make_signed_fixture(i, domain)) for i in range(n_total)]
+
+    if os.path.exists(sqlite_path):
+        os.remove(sqlite_path)
+    # Initialize the DB schema before independent processes contend on inserts.
+    SQLiteNonceStore(sqlite_path)
+
+    ctx = multiprocessing.get_context("spawn")
+    start_barrier = ctx.Barrier(workers + 1)
+    out_queue = ctx.Queue()
+    chunks = [fixtures[i::workers] for i in range(workers)]
+    processes = [
+        ctx.Process(
+            target=_multiprocess_sqlite_worker,
+            args=(sqlite_path, chunk, start_barrier, out_queue),
+        )
+        for chunk in chunks
+    ]
+
+    for process in processes:
+        process.start()
+    start_barrier.wait(timeout=20)
+    started = time.perf_counter()
+    for process in processes:
+        process.join(timeout=120)
+        if process.exitcode != 0:
+            raise RuntimeError(f"worker exited with code {process.exitcode}")
+    elapsed = time.perf_counter() - started
+
+    timings_ms: list[float] = []
+    denies = 0
+    for _ in processes:
+        worker_timings, worker_denies = out_queue.get(timeout=10)
+        timings_ms.extend(worker_timings)
+        denies += worker_denies
+
+    return MatrixRow(
+        config=f"sqlite-consume-multiprocess-{workers}p",
+        store="sqlite",
+        consume_nonce=True,
+        concurrency=workers,
+        n=n_total,
+        denies=denies,
+        mean_ms=float(statistics.mean(timings_ms)) if timings_ms else 0.0,
+        p50_ms=pct(timings_ms, 0.50),
+        p95_ms=pct(timings_ms, 0.95),
+        throughput_rps=(n_total / elapsed) if elapsed > 0 else 0.0,
+    )
+
+
 def to_markdown(rows: list[MatrixRow]) -> str:
     lines = []
     lines.append("# research-v2 · overhead experiment matrix\n")
@@ -244,6 +335,13 @@ def main() -> None:
             sqlite_path=sqlite_path,
         )
     )
+    rows.append(
+        _run_sqlite_multiprocess(
+            n_total=args.n_concurrent,
+            workers=args.concurrency,
+            sqlite_path=sqlite_path,
+        )
+    )
 
     payload = {
         "rows": [asdict(r) for r in rows],
@@ -254,7 +352,7 @@ def main() -> None:
         },
         "notes": {
             "timed_region": "IntentEngine.validate_signed only; signing excluded; no wallet/RPC I/O",
-            "concurrency": "threads + multiple SQLite connections to a shared DB file",
+            "concurrency": "threads and spawned processes; independent SQLite connections to one shared DB file",
         },
     }
 

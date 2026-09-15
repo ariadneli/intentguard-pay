@@ -175,13 +175,13 @@ npm run verify:eip712
 - EIP-712 typed-data hashing and signer recovery against a shared TypeScript/Python golden vector.
 - An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the payer--nonce was already consumed (in-memory by default; optionally durable via SQLite in research-v2).
 - Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
-- research-v2 verification-kernel microbenchmarks (memory vs SQLite nonce store) and durable replay tests under `docs/research-v2/`.
+- research-v2 overhead matrix (memory/SQLite; serial/threaded/spawned-process) and restart/thread/process at-most-once replay tests under `docs/research-v2/`.
 - The read-only Sepolia receipt verification workflow.
 
 ### What is deliberately not claimed
 
 - Production wallet custody guarantees; the dashboard can request and verify `eth_signTypedData_v4` signatures, but it never sends transactions or handles private keys.
-- Distributed replay atomicity across replicas; research-v2 demonstrates durable replay denial across restarts using SQLite, but not a replicated deployment guarantee.
+- Multi-host/geo-distributed replay consensus or atomic coupling to an external wallet broadcast; research-v2 demonstrates at-most-once release for independent processes sharing one SQLite authority.
 - Live smart-account or on-chain enforcement.
 - Product-level equivalence to mature external payment or wallet systems.
 
@@ -204,6 +204,7 @@ OpenAPI docs are available at `/docs` when the backend is running.
 intentguard-pay-public/
 ├── backend/
 │   ├── bench_overhead.py
+│   ├── bench_overhead_matrix.py
 │   ├── eip712.py
 │   ├── intent_engine.py
 │   ├── main.py
@@ -222,7 +223,9 @@ intentguard-pay-public/
 │   ├── research-context.md
 │   ├── signed-intent-evaluation.md
 │   └── research-v2/
-│       └── overhead_*.json
+│       ├── overhead_*.json
+│       ├── overhead_matrix.json
+│       └── overhead_matrix.md
 ├── src/
 │   ├── App.tsx
 │   ├── main.tsx

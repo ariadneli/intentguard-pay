@@ -1,4 +1,5 @@
 import json
+import multiprocessing
 import os
 import tempfile
 import threading
@@ -8,6 +9,26 @@ from pathlib import Path
 from eip712 import EIP712Domain, EIP712PaymentIntent, SignedPaymentIntent, SignedProposedExecution
 from intent_engine import IntentEngine
 from nonce_store import SQLiteNonceStore
+
+
+def _process_validate_shared_nonce(db_path, payload, start_event, out_queue):
+    """Spawn-safe worker for the multi-process at-most-once regression test."""
+
+    intent = EIP712PaymentIntent(**payload["intent"])
+    domain = EIP712Domain(**payload["domain"])
+    signed = SignedPaymentIntent(intent=intent, domain=domain, signature=payload["signature"])
+    execution = SignedProposedExecution(
+        recipient=intent.recipient,
+        chainId=intent.chain_id,
+        asset=intent.asset,
+        amountWei=intent.amount_wei,
+        calldataHash=intent.resource_hash,
+    )
+    engine = IntentEngine(nonce_store=SQLiteNonceStore(db_path))
+    start_event.wait(timeout=10)
+    receipt = engine.validate_signed(signed, execution)
+    failed = [c.code for c in receipt.policy_checks if not c.passed]
+    out_queue.put((receipt.decision, failed))
 
 
 class DurableNonceStoreTest(unittest.TestCase):
@@ -90,5 +111,43 @@ class DurableNonceStoreTest(unittest.TestCase):
             denied = next(r for r in receipts if r.decision == "DENY")
             failed = {c.code for c in denied.policy_checks if not c.passed}
             self.assertIn("NONCE_UNUSED", failed)
+        finally:
+            os.unlink(tmp.name)
+
+    def test_multi_process_validation_is_at_most_once_under_sqlite(self):
+        """Two independent processes sharing one DB must not both approve a nonce."""
+
+        vector_path = Path(__file__).resolve().parent.parent / "fixtures" / "eip712-golden-vector.json"
+        payload = json.loads(vector_path.read_text(encoding="utf-8"))
+
+        tmp = tempfile.NamedTemporaryFile(prefix="intentguard_nonces_proc_", suffix=".sqlite3", delete=False)
+        tmp.close()
+        try:
+            # Initialize schema before workers race.
+            SQLiteNonceStore(tmp.name)
+
+            ctx = multiprocessing.get_context("spawn")
+            start_event = ctx.Event()
+            out_queue = ctx.Queue()
+            processes = [
+                ctx.Process(
+                    target=_process_validate_shared_nonce,
+                    args=(tmp.name, payload, start_event, out_queue),
+                )
+                for _ in range(2)
+            ]
+            for process in processes:
+                process.start()
+            start_event.set()
+            for process in processes:
+                process.join(timeout=15)
+                self.assertEqual(process.exitcode, 0)
+
+            results = [out_queue.get(timeout=5) for _ in range(2)]
+            decisions = sorted(decision for decision, _ in results)
+            self.assertEqual(decisions, ["AUTO_APPROVE", "DENY"])
+
+            denied_failed = next(failed for decision, failed in results if decision == "DENY")
+            self.assertIn("NONCE_UNUSED", denied_failed)
         finally:
             os.unlink(tmp.name)

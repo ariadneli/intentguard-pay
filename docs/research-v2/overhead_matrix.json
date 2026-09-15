@@ -1,6 +1,6 @@
 {
   "notes": {
-    "concurrency": "threads + multiple SQLite connections to a shared DB file",
+    "concurrency": "threads and spawned processes; independent SQLite connections to one shared DB file",
     "timed_region": "IntentEngine.validate_signed only; signing excluded; no wallet/RPC I/O"
   },
   "rows": [
@@ -9,48 +9,60 @@
       "config": "memory-verify-only",
       "consume_nonce": false,
       "denies": 0,
-      "mean_ms": 7.897132512,
+      "mean_ms": 7.939536164,
       "n": 250,
-      "p50_ms": 7.7023535,
-      "p95_ms": 9.15051695,
+      "p50_ms": 7.74269,
+      "p95_ms": 9.53325795,
       "store": "memory",
-      "throughput_rps": 126.5918489446761
+      "throughput_rps": 125.90930947513846
     },
     {
       "concurrency": 1,
       "config": "memory-consume",
       "consume_nonce": true,
       "denies": 0,
-      "mean_ms": 7.94485574,
+      "mean_ms": 7.989992192,
       "n": 250,
-      "p50_ms": 7.765362,
-      "p95_ms": 9.4859262,
+      "p50_ms": 7.765132,
+      "p95_ms": 9.856821949999999,
       "store": "memory",
-      "throughput_rps": 125.83087435764358
+      "throughput_rps": 125.11145380202899
     },
     {
       "concurrency": 1,
       "config": "sqlite-consume",
       "consume_nonce": true,
       "denies": 0,
-      "mean_ms": 8.157100032,
+      "mean_ms": 8.793857564,
       "n": 250,
-      "p50_ms": 7.8918545,
-      "p95_ms": 10.01752965,
+      "p50_ms": 8.261289999999999,
+      "p95_ms": 12.00609175,
       "store": "sqlite",
-      "throughput_rps": 122.56045447201224
+      "throughput_rps": 113.67424216005517
     },
     {
       "concurrency": 4,
       "config": "sqlite-consume-concurrent-4w",
       "consume_nonce": true,
       "denies": 0,
-      "mean_ms": 35.491471425,
+      "mean_ms": 35.3295292,
       "n": 320,
-      "p50_ms": 32.456187,
-      "p95_ms": 62.98848145,
+      "p50_ms": 33.066917000000004,
+      "p95_ms": 62.79038045,
       "store": "sqlite",
-      "throughput_rps": 110.5774512397775
+      "throughput_rps": 111.65232801669559
+    },
+    {
+      "concurrency": 4,
+      "config": "sqlite-consume-multiprocess-4p",
+      "consume_nonce": true,
+      "denies": 0,
+      "mean_ms": 7.99137465,
+      "n": 320,
+      "p50_ms": 7.8526465000000005,
+      "p95_ms": 8.850364350000003,
+      "store": "sqlite",
+      "throughput_rps": 430.49017176939225
     }
   ],
   "runtime": {
