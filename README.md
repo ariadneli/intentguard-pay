@@ -2,7 +2,7 @@
 
 **Repository:** https://github.com/ariadneli/intentguard-pay
 
-> No public hosted deployment is currently provided. Run the dashboard locally using the instructions below.
+**Live demo:** https://intentguard-pay.netlify.app/
 
 IntentGuard Pay is a public, self-contained research prototype for deterministic authorization around agentic payments. It asks whether an autonomous payment planner can remain useful when money only moves after a separate, machine-checkable layer validates a declared payment envelope, matches the proposed execution, and emits auditable evidence.
 
