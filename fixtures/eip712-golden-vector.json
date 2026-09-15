@@ -1,0 +1,25 @@
+{
+  "description": "Public test vector. The signing key is a deterministic test key and must never hold funds.",
+  "domain": {
+    "name": "IntentGuardPay",
+    "version": "1",
+    "chainId": 11155111,
+    "salt": "0xa5b291e76ff920d95da8a68299c3a29b4fdc08db8ba8e16e960e298ccfcabcc4"
+  },
+  "intent": {
+    "intentId": "0x0101010101010101010101010101010101010101010101010101010101010101",
+    "payer": "0x19e7e376e7c213b7e7e7e46cc70a5dd086daff2a",
+    "recipient": "0x3333333333333333333333333333333333333333",
+    "chainId": 11155111,
+    "asset": "ETH",
+    "amountWei": "20000000000000000",
+    "maxAmountWei": "20000000000000000",
+    "purpose": "Pay approved merchant",
+    "expiry": 1893456000,
+    "nonce": "0x0202020202020202020202020202020202020202020202020202020202020202",
+    "resourceHash": "0x0303030303030303030303030303030303030303030303030303030303030303"
+  },
+  "signature": "0xd0246547f443a7e4bbc341d83b02b4d40da29740a8cd75af67f702a70bd338d737b43865a6a5a4d066cf3f7792270ac1553eff5f6d1f9a00867d06576711b44e1c",
+  "digest": "0x57f94aed39d13942c32688f73809ddbc79eebcb021a93804b9391cc9519a92cb",
+  "recoveredSigner": "0x19e7e376e7c213b7e7e7e46cc70a5dd086daff2a"
+}
