@@ -11,7 +11,7 @@ The repository contains:
 - A React + TypeScript + Vite dashboard with deterministic fixture runs and a read-only Sepolia receipt verifier.
 - A FastAPI backend with EIP-712 signer recovery, deterministic authorization checks, and benchmark endpoints.
 - A shared TypeScript/Python EIP-712 golden vector.
-- Unit and Hypothesis property tests for signed-intent integrity, domain separation, execution drift, replay handling, and state isolation.
+- Unit, Hypothesis property, and rule-based state-machine tests for signed-intent integrity, domain separation, execution drift, replay handling, and state isolation.
 
 ## Research question
 
@@ -143,7 +143,7 @@ cp .env.example .env.local
 ```bash
 cd backend
 python -m pip install -r requirements-dev.txt
-HYPOTHESIS_MAX_EXAMPLES=1000 python -m unittest
+HYPOTHESIS_MAX_EXAMPLES=1000 HYPOTHESIS_STATEFUL_EXAMPLES=200 HYPOTHESIS_STATEFUL_STEPS=25 python -m unittest
 PORT=8000 python main.py
 ```
 
@@ -174,7 +174,7 @@ npm run verify:eip712
 - The original 11-fixture benchmark and mechanism-level baseline comparison.
 - EIP-712 typed-data hashing and signer recovery against a shared TypeScript/Python golden vector.
 - An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the payer--nonce was already consumed (in-memory by default; optionally durable via SQLite in research-v2).
-- Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
+- Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation, plus a `RuleBasedStateMachine` that generates valid, replayed, drifted, wrong-domain, post-signature-mutated, expired, and review-routed sequences while checking authorization--execution safety, at-most-once approval, and failure isolation after every transition. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
 - research-v2 overhead matrix (memory/SQLite; serial/threaded/spawned-process) and restart/thread/process at-most-once replay tests under `docs/research-v2/`.
 - The read-only Sepolia receipt verification workflow.
 
@@ -213,7 +213,8 @@ intentguard-pay-public/
 │   ├── requirements-dev.txt
 │   ├── test_eip712.py
 │   ├── test_intent_engine.py
-│   └── test_nonce_store.py
+│   ├── test_nonce_store.py
+│   └── test_state_machine.py
 ├── fixtures/
 │   └── eip712-golden-vector.json
 ├── scripts/
@@ -257,10 +258,10 @@ intentguard-pay-public/
 ## Future work
 
 - Harden the implemented review-and-sign flow with multi-wallet discovery, transaction simulation, accessibility testing, and production custody controls.
-- Add a persistent consume-once nonce / used-intent registry instead of process-local replay state.
+- Replace the single-host SQLite registry with a shared transactional or consensus-backed nonce authority when deploying across independent replicas.
 - Integrate [EIP-4337](https://eips.ethereum.org/EIPS/eip-4337) smart accounts or on-chain policy modules for execution-time enforcement.
 - Connect wallet transaction simulation / human-readable review more tightly to the authorized envelope.
-- Extend the current Hypothesis properties with state-machine testing, calldata-aware mutations, and smart-contract fuzzing.
+- Extend the state-machine suite with coverage-guided calldata fuzzing, crash injection, and a larger external attack corpus.
 
 ## Integrated IntentGuard components
 

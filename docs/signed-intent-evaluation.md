@@ -34,20 +34,31 @@ Hypothesis generates signed intents, keys, amounts, nonces, domain variants, sig
 
 The default profile sets `HYPOTHESIS_MAX_EXAMPLES=1000` per property. Hypothesis may stop earlier for finite strategies after exhausting their complete candidate space.
 
+## Stateful authorization evaluation
+
+`backend/test_state_machine.py` uses Hypothesis `RuleBasedStateMachine` to generate sequences over pre-signed intents from two payers. Its rules mix canonical release, replay, execution-amount drift, wrong-domain submission, post-signature mutation, expiry, and human-review routing. After every transition, the model checks:
+
+1. every `AUTO_APPROVE` is field-equal to its signed authorization and recovers the declared payer;
+2. each payer-scoped nonce is approved at most once;
+3. denied and review-routed attempts leave nonce state unchanged; and
+4. the model's consumed set agrees with the implementation's nonce store.
+
+The recorded profile uses 200 state-machine examples with up to 25 operations per sequence. This explores up to 5,000 ordered transitions in addition to the independent properties; it is generated test evidence, not exhaustive model checking.
+
 ## Observed run
 
 Command:
 
 ```bash
 cd backend
-HYPOTHESIS_MAX_EXAMPLES=1000 python -m unittest -v
+HYPOTHESIS_MAX_EXAMPLES=1000 HYPOTHESIS_STATEFUL_EXAMPLES=200 HYPOTHESIS_STATEFUL_STEPS=25 python -m unittest discover -v
 ```
 
-Observed on 2026-09-14:
+Observed on 2026-09-15:
 
-- 18 test methods passed.
+- 22 test methods passed, including the rule-based state machine.
 - 0 failures and 0 errors.
-- Runtime: 131.444 seconds in the recorded environment.
+- Runtime: 165.395 seconds in the recorded environment.
 - The TypeScript/Python golden-vector verification also passed.
 
 ## Observed MetaMask flow
@@ -56,4 +67,4 @@ The prototype dashboard was exercised locally with a dedicated empty MetaMask ac
 
 ## Claim boundary
 
-Passing these generated tests is evidence that the implemented invariants held over the exercised input space. It is not a formal proof, an audit, a production-wallet guarantee, or evidence of persistent replay safety across process restarts.
+Passing these generated tests is evidence that the implemented invariants held over the exercised input and transition space. The restart and spawned-process tests additionally support durable, single-host at-most-once release under one shared SQLite authority. These results are not exhaustive model checking, an independent audit, a production-wallet guarantee, geo-distributed replay consensus, or atomic coupling between nonce commit and wallet broadcast.
