@@ -1,0 +1,61 @@
+{
+  "notes": {
+    "concurrency": "threads + multiple SQLite connections to a shared DB file",
+    "timed_region": "IntentEngine.validate_signed only; signing excluded; no wallet/RPC I/O"
+  },
+  "rows": [
+    {
+      "concurrency": 1,
+      "config": "memory-verify-only",
+      "consume_nonce": false,
+      "denies": 0,
+      "mean_ms": 7.897132512,
+      "n": 250,
+      "p50_ms": 7.7023535,
+      "p95_ms": 9.15051695,
+      "store": "memory",
+      "throughput_rps": 126.5918489446761
+    },
+    {
+      "concurrency": 1,
+      "config": "memory-consume",
+      "consume_nonce": true,
+      "denies": 0,
+      "mean_ms": 7.94485574,
+      "n": 250,
+      "p50_ms": 7.765362,
+      "p95_ms": 9.4859262,
+      "store": "memory",
+      "throughput_rps": 125.83087435764358
+    },
+    {
+      "concurrency": 1,
+      "config": "sqlite-consume",
+      "consume_nonce": true,
+      "denies": 0,
+      "mean_ms": 8.157100032,
+      "n": 250,
+      "p50_ms": 7.8918545,
+      "p95_ms": 10.01752965,
+      "store": "sqlite",
+      "throughput_rps": 122.56045447201224
+    },
+    {
+      "concurrency": 4,
+      "config": "sqlite-consume-concurrent-4w",
+      "consume_nonce": true,
+      "denies": 0,
+      "mean_ms": 35.491471425,
+      "n": 320,
+      "p50_ms": 32.456187,
+      "p95_ms": 62.98848145,
+      "store": "sqlite",
+      "throughput_rps": 110.5774512397775
+    }
+  ],
+  "runtime": {
+    "platform": "Linux-5.4.210.bsk.6-amd64-x86_64-with-glibc2.36",
+    "processor": "",
+    "python": "3.11.9"
+  }
+}

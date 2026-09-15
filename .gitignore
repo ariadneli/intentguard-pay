@@ -11,6 +11,7 @@ pnpm-debug.log*
 # Python
 __pycache__/
 *.py[cod]
+*.sqlite3
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/

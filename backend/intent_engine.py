@@ -165,7 +165,6 @@ class IntentEngine:
         consume_nonce: bool = True,
         enabled_checks: Optional[Set[str]] = None,
     ) -> AuditReceipt:
-        nonce_unused = self.nonce_store.is_unused(intent.payer, intent.nonce)
         checks = [
             # Intent-time policy gates
             PolicyCheck(
@@ -225,7 +224,7 @@ class IntentEngine:
                 if execution.amount == intent.amount
                 else "Executed amount differs from the authorized payment amount.",
             ),
-            # Expiry + replay
+            # Expiry
             PolicyCheck(
                 code="INTENT_FRESH",
                 label="Intent expiry",
@@ -233,14 +232,6 @@ class IntentEngine:
                 detail="Intent is still valid."
                 if not _is_expired(intent.expiry)
                 else "Intent has expired and cannot be executed.",
-            ),
-            PolicyCheck(
-                code="NONCE_UNUSED",
-                label=self.nonce_store.label(),
-                passed=nonce_unused,
-                detail="Nonce has not been consumed."
-                if nonce_unused
-                else "Nonce was already consumed by an earlier execution.",
             ),
             # Execution-time policy module (smart account / module style)
             PolicyCheck(
@@ -282,6 +273,39 @@ class IntentEngine:
         if enabled_checks is not None:
             checks = [c for c in checks if c.code in enabled_checks]
 
+        nonce_enabled = enabled_checks is None or "NONCE_UNUSED" in enabled_checks
+
+        # research-v2: consume-as-commit.
+        # If an intent is otherwise eligible for AUTO_APPROVE, we attempt to consume the payer-scoped
+        # nonce as the final commit step. Failed consumption downgrades to DENY.
+        critical_failure = any(not check.passed for check in checks)
+        eligible_for_auto = (not critical_failure) and (execution.amount <= self.auto_approval_limit)
+
+        if nonce_enabled:
+            if eligible_for_auto and consume_nonce:
+                nonce_ok = self.nonce_store.consume(intent.payer, intent.nonce)
+                nonce_detail = (
+                    "Nonce consumed atomically on approval."
+                    if nonce_ok
+                    else "Nonce was already consumed (atomic conflict)."
+                )
+            else:
+                nonce_ok = self.nonce_store.is_unused(intent.payer, intent.nonce)
+                nonce_detail = (
+                    "Nonce is unused."
+                    if nonce_ok
+                    else "Nonce was already consumed by an earlier execution."
+                )
+
+            checks.append(
+                PolicyCheck(
+                    code="NONCE_UNUSED",
+                    label=self.nonce_store.label(),
+                    passed=nonce_ok,
+                    detail=nonce_detail,
+                )
+            )
+
         critical_failure = any(not check.passed for check in checks)
         if critical_failure:
             decision = "DENY"
@@ -295,8 +319,6 @@ class IntentEngine:
 
         tx_hash = None
         if decision == "AUTO_APPROVE":
-            if consume_nonce:
-                self.nonce_store.consume(intent.payer, intent.nonce)
             tx_hash = _canonical_hash(
                 {
                     "intent_hash": intent_hash,
@@ -346,7 +368,6 @@ class IntentEngine:
         signature_ok = recovered is not None
         signer_ok = signature_ok and recovered == expected_signer
         fresh = intent.expiry > int(_utc_now().timestamp())
-        nonce_unused = self.nonce_store.is_unused(expected_signer, intent.nonce)
         scope_matches = (
             execution.recipient.lower() == intent.recipient.lower()
             and execution.chain_id == intent.chain_id
@@ -443,15 +464,38 @@ class IntentEngine:
                 if fresh
                 else "The signed intent has expired.",
             ),
+        ]
+
+        # research-v2: consume-as-commit.
+        # Only attempt nonce consumption when the request is otherwise eligible for AUTO_APPROVE.
+        critical_failure = any(not check.passed for check in checks)
+        eligible_for_auto = (not critical_failure) and (
+            execution.amount_wei <= self.auto_approval_limit_wei
+        )
+
+        if eligible_for_auto and consume_nonce:
+            nonce_ok = self.nonce_store.consume(expected_signer, intent.nonce)
+            nonce_detail = (
+                "Nonce consumed atomically on approval."
+                if nonce_ok
+                else "Nonce was already consumed (atomic conflict)."
+            )
+        else:
+            nonce_ok = self.nonce_store.is_unused(expected_signer, intent.nonce)
+            nonce_detail = (
+                "Nonce is unused."
+                if nonce_ok
+                else "Nonce was already consumed by an earlier execution."
+            )
+
+        checks.append(
             PolicyCheck(
                 code="NONCE_UNUSED",
                 label=self.nonce_store.label(),
-                passed=nonce_unused,
-                detail="Nonce has not been consumed."
-                if nonce_unused
-                else "Nonce was already consumed by an earlier execution.",
-            ),
-        ]
+                passed=nonce_ok,
+                detail=nonce_detail,
+            )
+        )
 
         decision = "DENY" if any(not check.passed for check in checks) else (
             "HUMAN_REVIEW"
@@ -463,8 +507,6 @@ class IntentEngine:
 
         tx_hash = None
         if decision == "AUTO_APPROVE":
-            if consume_nonce:
-                self.nonce_store.consume(expected_signer, intent.nonce)
             tx_hash = _canonical_hash(
                 {
                     "typed_data_digest": digest,
