@@ -671,6 +671,9 @@ class FixtureCase:
     intent_patch: Dict
     execution_patch: Dict
     replay: bool = False
+    family: str = "legacy"
+    mutation_operator: str = "legacy"
+    severity: str = "unspecified"
 
 
 CONTROL_DEFINITIONS: List[Dict] = [
@@ -869,18 +872,22 @@ def _evaluate_profile(
     enabled_checks: Set[str],
     state_model: str,
     consume_nonce: bool,
+    fixtures: Optional[List[FixtureCase]] = None,
 ) -> Tuple[Dict, List[Dict]]:
     outcomes: List[Dict] = []
+    suite = FIXTURES if fixtures is None else fixtures
 
     # process-local baseline keeps state across fixtures
     shared_engine = IntentEngine() if state_model == "process-local" else None
 
-    for index, fixture in enumerate(FIXTURES):
+    for index, fixture in enumerate(suite):
         expected = "ALLOW" if fixture.kind == "legitimate" else "DENY"
 
         if fixture.replay:
             # Replay fixture uses the *same intent* twice.
-            replay_intent = _base_intent("replay-nonce").model_copy(update=fixture.intent_patch)
+            replay_intent = _base_intent("replay-%04d" % index).model_copy(
+                update=fixture.intent_patch
+            )
 
             def _run_attempt(engine: IntentEngine) -> AuditReceipt:
                 return engine.validate(
@@ -933,6 +940,9 @@ def _evaluate_profile(
                 "decision": receipt.decision,
                 "expected": expected,
                 "correct": correct,
+                "family": fixture.family,
+                "mutation_operator": fixture.mutation_operator,
+                "severity": fixture.severity,
             }
         )
 

@@ -1,0 +1,1707 @@
+{
+  "baseline_results": [
+    {
+      "by_family": {
+        "amount": {
+          "attack_block_rate": 50.0,
+          "attack_block_rate_wilson_95": [
+            43.72,
+            56.28
+          ],
+          "attacks": 240,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 120,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 240
+        },
+        "asset": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 80,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 80,
+          "false_rejection_rate": 0.0,
+          "total": 80
+        },
+        "chain": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            7.13
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "expiry": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 80,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            1.88
+          ],
+          "attacks": 200,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 200
+        },
+        "replay": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "by_operator": {
+        "amount/exact_amount_drift_within_ceiling": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.1
+          ],
+          "attacks": 120,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 120
+        },
+        "amount/over_intent_and_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "amount/over_intent_within_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "asset/execution_asset_substitution": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign/alternate_allowed_scope": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 40,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            91.24,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 40,
+          "false_rejection_rate": 0.0,
+          "total": 40
+        },
+        "benign/exact_ceiling_boundary": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 8,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            67.56,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 8,
+          "false_rejection_rate": 0.0,
+          "total": 8
+        },
+        "benign/ordinary_valid": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 32,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            89.28,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 32,
+          "false_rejection_rate": 0.0,
+          "total": 32
+        },
+        "chain/execution_chain_substitution": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional/chain+asset": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            18.43
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+amount": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            18.43
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+chain+amount": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            19.36
+          ],
+          "attacks": 16,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 16
+        },
+        "expiry/reuse_after_expiry": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 80,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy/authorize_unapproved_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient/substitute_with_allowed_recipient": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "recipient/substitute_with_external_recipient": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "replay/repeat_identical_authorization": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "controls": [
+        "intent-allowlists",
+        "intent-max-amount",
+        "intent-expiry"
+      ],
+      "label": "Policy gate only",
+      "mode": "policy-gate-only",
+      "overall": {
+        "attack_block_rate": 27.17,
+        "attack_block_rate_wilson_95": [
+          24.4,
+          30.14
+        ],
+        "attacks": 920,
+        "benign": 80,
+        "benign_completion_rate": 100.0,
+        "benign_completion_rate_wilson_95": [
+          95.42,
+          100.0
+        ],
+        "blocked_attacks": 250,
+        "completed_benign": 80,
+        "false_rejection_rate": 0.0,
+        "total": 1000
+      },
+      "state_model": "stateless"
+    },
+    {
+      "by_family": {
+        "amount": {
+          "attack_block_rate": 25.0,
+          "attack_block_rate_wilson_95": [
+            19.94,
+            30.84
+          ],
+          "attacks": 240,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 240
+        },
+        "asset": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 80,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 80,
+          "false_rejection_rate": 0.0,
+          "total": 80
+        },
+        "chain": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "expiry": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            4.58
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient": {
+          "attack_block_rate": 50.0,
+          "attack_block_rate_wilson_95": [
+            43.14,
+            56.86
+          ],
+          "attacks": 200,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 200
+        },
+        "replay": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "by_operator": {
+        "amount/exact_amount_drift_within_ceiling": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.1
+          ],
+          "attacks": 120,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 120
+        },
+        "amount/over_intent_and_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "amount/over_intent_within_execution_policy": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            6.02
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "asset/execution_asset_substitution": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign/alternate_allowed_scope": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 40,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            91.24,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 40,
+          "false_rejection_rate": 0.0,
+          "total": 40
+        },
+        "benign/exact_ceiling_boundary": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 8,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            67.56,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 8,
+          "false_rejection_rate": 0.0,
+          "total": 8
+        },
+        "benign/ordinary_valid": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 32,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            89.28,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 32,
+          "false_rejection_rate": 0.0,
+          "total": 32
+        },
+        "chain/execution_chain_substitution": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional/chain+asset": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            81.57,
+            100.0
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 17,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            81.57,
+            100.0
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 17,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+chain+amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            80.64,
+            100.0
+          ],
+          "attacks": 16,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 16,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 16
+        },
+        "expiry/reuse_after_expiry": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            4.58
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy/authorize_unapproved_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient/substitute_with_allowed_recipient": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "recipient/substitute_with_external_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "replay/repeat_identical_authorization": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "controls": [
+        "execution-policy-allowlists",
+        "execution-policy-max-amount"
+      ],
+      "label": "Smart account policy only",
+      "mode": "smart-account-policy",
+      "overall": {
+        "attack_block_rate": 50.0,
+        "attack_block_rate_wilson_95": [
+          46.78,
+          53.22
+        ],
+        "attacks": 920,
+        "benign": 80,
+        "benign_completion_rate": 100.0,
+        "benign_completion_rate_wilson_95": [
+          95.42,
+          100.0
+        ],
+        "blocked_attacks": 460,
+        "completed_benign": 80,
+        "false_rejection_rate": 0.0,
+        "total": 1000
+      },
+      "state_model": "stateless"
+    },
+    {
+      "by_family": {
+        "amount": {
+          "attack_block_rate": 50.0,
+          "attack_block_rate_wilson_95": [
+            43.72,
+            56.28
+          ],
+          "attacks": 240,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 120,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 240
+        },
+        "asset": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 80,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 80,
+          "false_rejection_rate": 0.0,
+          "total": 80
+        },
+        "chain": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "expiry": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 80,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            7.13
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            98.12,
+            100.0
+          ],
+          "attacks": 200,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 200,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 200
+        },
+        "replay": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "by_operator": {
+        "amount/exact_amount_drift_within_ceiling": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.1
+          ],
+          "attacks": 120,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 120
+        },
+        "amount/over_intent_and_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "amount/over_intent_within_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "asset/execution_asset_substitution": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign/alternate_allowed_scope": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 40,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            91.24,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 40,
+          "false_rejection_rate": 0.0,
+          "total": 40
+        },
+        "benign/exact_ceiling_boundary": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 8,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            67.56,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 8,
+          "false_rejection_rate": 0.0,
+          "total": 8
+        },
+        "benign/ordinary_valid": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 32,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            89.28,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 32,
+          "false_rejection_rate": 0.0,
+          "total": 32
+        },
+        "chain/execution_chain_substitution": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional/chain+asset": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            81.57,
+            100.0
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 17,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            81.57,
+            100.0
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 17,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+chain+amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            80.64,
+            100.0
+          ],
+          "attacks": 16,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 16,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 16
+        },
+        "expiry/reuse_after_expiry": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 80,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy/authorize_unapproved_recipient": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            7.13
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient/substitute_with_allowed_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "recipient/substitute_with_external_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "replay/repeat_identical_authorization": {
+          "attack_block_rate": 0.0,
+          "attack_block_rate_wilson_95": [
+            0.0,
+            3.7
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 0,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "controls": [
+        "execution-scope-binding",
+        "intent-max-amount",
+        "intent-expiry"
+      ],
+      "label": "Stateless intent/execution binding",
+      "mode": "stateless-intent-execution-binding",
+      "overall": {
+        "attack_block_rate": 70.65,
+        "attack_block_rate_wilson_95": [
+          67.63,
+          73.5
+        ],
+        "attacks": 920,
+        "benign": 80,
+        "benign_completion_rate": 100.0,
+        "benign_completion_rate_wilson_95": [
+          95.42,
+          100.0
+        ],
+        "blocked_attacks": 650,
+        "completed_benign": 80,
+        "false_rejection_rate": 0.0,
+        "total": 1000
+      },
+      "state_model": "stateless"
+    },
+    {
+      "by_family": {
+        "amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            98.42,
+            100.0
+          ],
+          "attacks": 240,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 240,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 240
+        },
+        "asset": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 80,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 80,
+          "false_rejection_rate": 0.0,
+          "total": 80
+        },
+        "chain": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "expiry": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 80,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            98.12,
+            100.0
+          ],
+          "attacks": 200,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 200,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 200
+        },
+        "replay": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "by_operator": {
+        "amount/exact_amount_drift_within_ceiling": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.9,
+            100.0
+          ],
+          "attacks": 120,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 120,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 120
+        },
+        "amount/over_intent_and_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "amount/over_intent_within_execution_policy": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            93.98,
+            100.0
+          ],
+          "attacks": 60,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 60,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 60
+        },
+        "asset/execution_asset_substitution": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "benign/alternate_allowed_scope": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 40,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            91.24,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 40,
+          "false_rejection_rate": 0.0,
+          "total": 40
+        },
+        "benign/exact_ceiling_boundary": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 8,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            67.56,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 8,
+          "false_rejection_rate": 0.0,
+          "total": 8
+        },
+        "benign/ordinary_valid": {
+          "attack_block_rate": null,
+          "attack_block_rate_wilson_95": null,
+          "attacks": 0,
+          "benign": 32,
+          "benign_completion_rate": 100.0,
+          "benign_completion_rate_wilson_95": [
+            89.28,
+            100.0
+          ],
+          "blocked_attacks": 0,
+          "completed_benign": 32,
+          "false_rejection_rate": 0.0,
+          "total": 32
+        },
+        "chain/execution_chain_substitution": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "compositional/chain+asset": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            81.57,
+            100.0
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 17,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            81.57,
+            100.0
+          ],
+          "attacks": 17,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 17,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 17
+        },
+        "compositional/recipient+chain+amount": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            80.64,
+            100.0
+          ],
+          "attacks": 16,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 16,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 16
+        },
+        "expiry/reuse_after_expiry": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            95.42,
+            100.0
+          ],
+          "attacks": 80,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 80,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 80
+        },
+        "policy/authorize_unapproved_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            92.87,
+            100.0
+          ],
+          "attacks": 50,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 50,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 50
+        },
+        "recipient/substitute_with_allowed_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "recipient/substitute_with_external_recipient": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        },
+        "replay/repeat_identical_authorization": {
+          "attack_block_rate": 100.0,
+          "attack_block_rate_wilson_95": [
+            96.3,
+            100.0
+          ],
+          "attacks": 100,
+          "benign": 0,
+          "benign_completion_rate": null,
+          "benign_completion_rate_wilson_95": null,
+          "blocked_attacks": 100,
+          "completed_benign": 0,
+          "false_rejection_rate": null,
+          "total": 100
+        }
+      },
+      "controls": [
+        "intent-allowlists",
+        "intent-max-amount",
+        "intent-expiry",
+        "execution-scope-binding",
+        "execution-amount-exact",
+        "replay-guard-process-local"
+      ],
+      "label": "IntentGuard full",
+      "mode": "intentguard-full",
+      "overall": {
+        "attack_block_rate": 100.0,
+        "attack_block_rate_wilson_95": [
+          99.58,
+          100.0
+        ],
+        "attacks": 920,
+        "benign": 80,
+        "benign_completion_rate": 100.0,
+        "benign_completion_rate_wilson_95": [
+          95.42,
+          100.0
+        ],
+        "blocked_attacks": 920,
+        "completed_benign": 80,
+        "false_rejection_rate": 0.0,
+        "total": 1000
+      },
+      "state_model": "process-local"
+    }
+  ],
+  "interpretation_boundary": [
+    "Mechanism profiles are evaluated on identical deterministic cases; they are not external project reproductions.",
+    "Confidence intervals quantify finite-corpus uncertainty, not real-world attack prevalence.",
+    "Signer/domain and calldata-semantics claims remain outside this corpus."
+  ],
+  "manifest": {
+    "counts": {
+      "amount": 240,
+      "asset": 100,
+      "benign": 80,
+      "chain": 100,
+      "compositional": 50,
+      "expiry": 80,
+      "policy": 50,
+      "recipient": 200,
+      "replay": 100
+    },
+    "excluded_dimensions": [
+      "EIP-712 signer/domain mutations (covered by signed property/state tests)",
+      "calldata semantic equivalence (only hash commitment is modeled)",
+      "distributed nonce consensus and wallet-broadcast atomicity"
+    ],
+    "schema_version": "paact-core-v1",
+    "scope": [
+      "intent allowlists",
+      "execution recipient/chain/asset binding",
+      "exact amount and amount ceiling",
+      "expiry",
+      "payer-scoped replay",
+      "compositional mutations",
+      "benign boundary cases"
+    ],
+    "seed": 20260916,
+    "total_cases": 1000
+  },
+  "taxonomy": {
+    "amount": {
+      "label": "Amount mutation",
+      "security_property": "exact binding and authorization ceiling"
+    },
+    "asset": {
+      "label": "Asset mutation",
+      "security_property": "execution scope and asset allowlists"
+    },
+    "benign": {
+      "label": "Benign boundary cases",
+      "security_property": "utility / false-rejection control"
+    },
+    "chain": {
+      "label": "Chain mutation",
+      "security_property": "execution scope and chain allowlists"
+    },
+    "compositional": {
+      "label": "Compositional mutation",
+      "security_property": "multiple simultaneous authorization violations"
+    },
+    "expiry": {
+      "label": "Expired authorization",
+      "security_property": "freshness"
+    },
+    "policy": {
+      "label": "Unauthorized intent envelope",
+      "security_property": "intent-time policy"
+    },
+    "recipient": {
+      "label": "Recipient mutation",
+      "security_property": "execution scope and policy allowlists"
+    },
+    "replay": {
+      "label": "Replay",
+      "security_property": "payer-scoped at-most-once release"
+    }
+  }
+}

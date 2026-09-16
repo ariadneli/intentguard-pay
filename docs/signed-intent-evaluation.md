@@ -54,11 +54,11 @@ cd backend
 HYPOTHESIS_MAX_EXAMPLES=1000 HYPOTHESIS_STATEFUL_EXAMPLES=200 HYPOTHESIS_STATEFUL_STEPS=25 python -m unittest discover -v
 ```
 
-Observed on 2026-09-15:
+Observed on 2026-09-16:
 
-- 22 test methods passed, including the rule-based state machine.
+- 27 test methods passed in the research-v3 full suite, including the rule-based state machine and five corpus tests.
 - 0 failures and 0 errors.
-- Runtime: 165.395 seconds in the recorded environment.
+- Runtime: 167.718 seconds in the recorded environment.
 - The TypeScript/Python golden-vector verification also passed.
 
 ## Observed MetaMask flow

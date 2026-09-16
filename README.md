@@ -12,6 +12,7 @@ The repository contains:
 - A FastAPI backend with EIP-712 signer recovery, deterministic authorization checks, and benchmark endpoints.
 - A shared TypeScript/Python EIP-712 golden vector.
 - Unit, Hypothesis property, and rule-based state-machine tests for signed-intent integrity, domain separation, execution drift, replay handling, and state isolation.
+- PAACT-Core v1: a fixed-seed, 1,000-case payment-authorization mutation corpus evaluated identically across every mechanism-level baseline, with family/operator breakdowns and Wilson intervals.
 
 ## Research question
 
@@ -168,6 +169,15 @@ Cross-language EIP-712 vector:
 npm run verify:eip712
 ```
 
+PAACT-Core v1 corpus and baseline matrix (research-v3):
+
+```bash
+cd backend
+python generate_attack_corpus.py
+```
+
+This deterministically regenerates `fixtures/paact-core-v1.jsonl` and the JSON/Markdown reports under `docs/research-v3/` from seed `20260916`. The corpus contains 920 attacks and 80 benign boundary cases; every mechanism profile receives the identical ordered cases.
+
 ### What is reproducible here
 
 - The deterministic fixture scenarios exposed by the frontend and backend.
@@ -176,6 +186,7 @@ npm run verify:eip712
 - An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the payer--nonce was already consumed (in-memory by default; optionally durable via SQLite in research-v2).
 - Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation, plus a `RuleBasedStateMachine` that generates valid, replayed, drifted, wrong-domain, post-signature-mutated, expired, and review-routed sequences while checking authorization--execution safety, at-most-once approval, and failure isolation after every transition. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
 - research-v2 overhead matrix (memory/SQLite; serial/threaded/spawned-process) and restart/thread/process at-most-once replay tests under `docs/research-v2/`.
+- research-v3 PAACT-Core v1: 1,000 fixed-seed cases across benign, recipient, amount, chain, asset, expiry, replay, policy, and compositional families; all four mechanism profiles are reported overall and by family/operator with 95% Wilson intervals.
 - The read-only Sepolia receipt verification workflow.
 
 ### What is deliberately not claimed
@@ -184,6 +195,7 @@ npm run verify:eip712
 - Multi-host/geo-distributed replay consensus or atomic coupling to an external wallet broadcast; research-v2 demonstrates at-most-once release for independent processes sharing one SQLite authority.
 - Live smart-account or on-chain enforcement.
 - Product-level equivalence to mature external payment or wallet systems.
+- Real-world attack prevalence or external-project superiority from PAACT-Core: it is a deterministic author-generated mutation corpus, not an observed-incident dataset or reproduction of named systems.
 
 ## API overview
 
@@ -203,30 +215,38 @@ OpenAPI docs are available at `/docs` when the backend is running.
 ```text
 intentguard-pay-public/
 ├── backend/
+│   ├── attack_corpus.py
 │   ├── bench_overhead.py
 │   ├── bench_overhead_matrix.py
 │   ├── eip712.py
+│   ├── generate_attack_corpus.py
 │   ├── intent_engine.py
 │   ├── main.py
 │   ├── nonce_store.py
 │   ├── requirements.txt
 │   ├── requirements-dev.txt
 │   ├── test_eip712.py
+│   ├── test_attack_corpus.py
 │   ├── test_intent_engine.py
 │   ├── test_nonce_store.py
 │   └── test_state_machine.py
 ├── fixtures/
-│   └── eip712-golden-vector.json
+│   ├── eip712-golden-vector.json
+│   └── paact-core-v1.jsonl
 ├── scripts/
 │   └── verify-eip712-vector.mjs
 ├── docs/
 │   ├── evaluation-methodology.md
 │   ├── research-context.md
 │   ├── signed-intent-evaluation.md
-│   └── research-v2/
-│       ├── overhead_*.json
-│       ├── overhead_matrix.json
-│       └── overhead_matrix.md
+│   ├── research-v2/
+│   │   ├── overhead_*.json
+│   │   ├── overhead_matrix.json
+│   │   └── overhead_matrix.md
+│   └── research-v3/
+│       ├── paact-core-v1.md
+│       ├── paact-core-v1-results.json
+│       └── paact-core-v1-results.md
 ├── src/
 │   ├── App.tsx
 │   ├── main.tsx
