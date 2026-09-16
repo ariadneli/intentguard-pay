@@ -1,130 +1,77 @@
-# IntentGuard Pay
+# IntentGuard Pay — Final Research Version
 
-**Repository:** https://github.com/ariadneli/intentguard-pay
-
+**Repository:** https://github.com/ariadneli/intentguard-pay  
 **Live demo:** https://intentguard-pay.netlify.app/
 
-IntentGuard Pay is a public, self-contained research prototype for deterministic authorization around agentic payments. It asks whether an autonomous payment planner can remain useful when money only moves after a separate, machine-checkable layer validates a declared payment envelope, matches the proposed execution, and emits auditable evidence.
+IntentGuard Pay is a public, self-contained research prototype for deterministic authorization around agentic payments. It studies whether an autonomous payment planner can remain useful when money only moves after a separate, machine-checkable layer validates a signed payment envelope, binds it to the proposed execution, consumes replay state, and emits auditable evidence.
 
-The repository contains:
+This repository is the **final course research version**. Earlier public-demo and intermediate research versions are historical only.
 
-- A React + TypeScript + Vite dashboard with deterministic fixture runs and a read-only Sepolia receipt verifier.
-- A FastAPI backend with EIP-712 signer recovery, deterministic authorization checks, and benchmark endpoints.
-- A shared TypeScript/Python EIP-712 golden vector.
-- Unit, Hypothesis property, and rule-based state-machine tests for signed-intent integrity, domain separation, execution drift, replay handling, and state isolation.
-- PAACT-Core v1: a fixed-seed, 1,000-case payment-authorization mutation corpus evaluated identically across every mechanism-level baseline, with family/operator breakdowns and Wilson intervals.
+## What is included
+
+- React + TypeScript + Vite dashboard for the public demo.
+- FastAPI backend with deterministic authorization checks.
+- EIP-712 signed `PaymentIntent` verification path with signer recovery and domain separation.
+- Payer-scoped replay protection with in-memory and SQLite nonce-store implementations.
+- PAACT-Core v1: a deterministic 1,000-case payment-authorization mutation corpus.
+- Mechanism-level baseline matrix, family/operator breakdown, Wilson intervals, property/state-machine tests, and overhead/replay experiments.
 
 ## Research question
 
-**Can deterministic intent validation prevent unauthorized agentic payments without blocking legitimate autonomy?**
+> Can a deterministic authorization boundary prevent agentic payment execution from drifting away from what the user authorized, while preserving benign completion?
 
-IntentGuard studies a narrow boundary: the agent may plan a payment, but execution is released only if the proposed call stays within an authorized envelope and deterministic policy checks. The prototype is designed to clarify what this layer can prove, and what it cannot.
+The project focuses on the gap between:
 
-## Threat model
+1. what the user meant to authorize,
+2. what an agent proposes,
+3. what a wallet signs or releases,
+4. what the chain records, and
+5. what an auditor can reconstruct later.
 
-### In scope
+## Core mechanism
 
-- **Model/tool misuse:** prompt injection, excessive agency, or confused-deputy behavior can cause an agent to propose a syntactically valid but semantically unauthorized payment. See [OWASP Prompt Injection](https://owasp.org/www-community/attacks/PromptInjection), [OWASP LLM Top 10 2025 / LLM06 Excessive Agency](https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf), and [Intent-Governed Tool Authorization for AI Agents](https://arxiv.org/abs/2606.22916).
-- **Authorization mismatch:** recipient substitution, amount escalation, chain/token switching, expiry abuse, and replay against a previously authorized payment envelope. See the [OWASP Transaction Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Transaction_Authorization_Cheat_Sheet.html).
-- **Execution/evidence mismatch:** a receipt can confirm that something executed on-chain, but not by itself prove why it was authorized. See [Ethereum JSON-RPC receipts](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt).
+IntentGuard validates an explicit payment authorization before release:
 
-### Out of scope
+1. Recover the signer from EIP-712 typed data.
+2. Check the expected signing domain.
+3. Enforce intent-time policy: chain, asset, recipient, amount ceiling, expiry.
+4. Bind proposed execution to the signed intent: recipient, chain, asset, amount, calldata/resource commitment.
+5. Consume a payer-scoped nonce at the release commit point.
+6. Emit evidence for later reconstruction.
 
-- Compromised private keys, compromised wallet binaries, or malicious browser extensions.
-- Production custody, treasury operations, or real-fund settlement.
-- Chain-level consensus failures, reorg handling beyond the read-only verifier's receipt checks, or malicious RPC infrastructure.
-- The prototype focuses on deterministic validation for the stated payment threat model; it does not claim exhaustive production-wallet coverage.
+## PAACT-Core v1 evaluation
 
-## Defense landscape / related work
+PAACT-Core v1 is a fixed-seed, author-generated corpus with:
 
-### Structured signing and readable review
+- **1,000 total cases**
+- **920 attacks** across eight mutation families
+- **80 benign boundary cases**
 
-- [EIP-712](https://eips.ethereum.org/EIPS/eip-712) standardizes typed structured signing and domain separation, which helps wallets render what is being authorized. However, the standard explicitly does **not** provide replay protection.
-- [EIP-2612](https://eips.ethereum.org/EIPS/eip-2612) shows the usual pattern: typed signing becomes useful only when the application also tracks nonce and deadline state.
-- Wallet review systems such as [Rabby transaction simulation](https://support.rabby.io/en/articles/14124199-understanding-rabby-s-transaction-simulation) and [Tenderly Transaction Preview](https://docs.tenderly.co/simulations/transaction-preview) improve pre-sign human inspection, but preview is not the same as execution-time enforcement.
+The attack families are:
 
-### Smart accounts and on-chain policy
+- recipient mutation
+- amount mutation
+- chain mutation
+- asset mutation
+- expiry mutation
+- replay
+- unauthorized intent policy
+- compositional mutation
 
-- [EIP-4337](https://eips.ethereum.org/EIPS/eip-4337) and the [ERC-4337 Smart Accounts documentation](https://docs.erc4337.io/smart-accounts/index.html) make programmable validation possible, but the actual authorization semantics depend on the account implementation.
-- Modular-account standards and modules such as [ERC-7579 / ERC-6900 overview](https://docs.erc4337.io/smart-accounts/modular-accounts.html), [Safe AI spending limits](https://docs.safe.global/home/ai-agent-quickstarts/agent-with-spending-limit), and [Zodiac Roles](https://docs.zodiac.eco/faq) show how allowlists, limits, and execution-time policies can be enforced.
-- This repository does **not** implement smart accounts, session keys, paymasters, or on-chain policy modules. Those are comparative context and future-work targets.
+### Overall mechanism-profile results
 
-### Agent tool security
+| Profile | Attack block rate | 95% Wilson CI | Benign completion | False rejection |
+|---|---:|---:|---:|---:|
+| `policy-gate-only` | 27.17% (250/920) | [24.40, 30.14] | 100% | 0% |
+| `smart-account-policy` | 50.00% (460/920) | [46.78, 53.22] | 100% | 0% |
+| `stateless-intent-execution-binding` | 70.65% (650/920) | [67.63, 73.50] | 100% | 0% |
+| `intentguard-full` | 100.00% (920/920) | [99.58, 100] | 100% | 0% |
 
-- The core research gap is not only "can the wallet sign?" but also "should this tool-triggered payment be allowed to execute at all?"
-- That framing is motivated by [OWASP Prompt Injection](https://owasp.org/www-community/attacks/PromptInjection), [LLM06 Excessive Agency](https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-v2025.pdf), and [Capability Gates Are Not Authorization](https://arxiv.org/html/2606.28679v1), which distinguish capability exposure from per-call authorization.
-
-### Post-execution evidence
-
-- [Ethereum receipts](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_gettransactionreceipt), logs, and traces can reconstruct **what executed**.
-- They do not, by themselves, prove the original human-readable request, the UI the user saw, or whether the agent was semantically aligned when it proposed the call.
-
-For the expanded threat taxonomy, coverage taxonomy, and related-work notes, see [docs/research-context.md](docs/research-context.md).
-
-## Architecture
-
-```text
-User request -> EIP-712 PaymentIntent -> Signature recovery -> Policy + execution binding
-                                                              -> Wallet release / deny
-                                                              -> Typed evidence receipt
-```
-
-Core controls in this prototype:
-
-1. **Signed payment envelope**: payer, recipient, chain, asset, integer-denominated amount, maximum amount, expiry, nonce, and resource hash are encoded and verified as EIP-712 typed data.
-2. **Domain and signer validation**: the backend reconstructs the typed-data digest, enforces the IntentGuard Pay Sepolia domain, and requires the recovered signer to equal the declared payer.
-3. **Deterministic policy checks**: chain allowlist, token allowlist, recipient allowlist, amount ceiling, execution match, expiry, and replay-state checks.
-4. **Execution matching**: the proposed call must match the signed envelope before the wallet-release step.
-5. **Replay guard (nonce store)**: `AUTO_APPROVE` consumes a payer-scoped nonce via a pluggable `NonceStore` (default: in-memory; optional: SQLite durable store so replay denial persists across restarts). `DENY` and `HUMAN_REVIEW` do not consume state.
-6. **Audit receipt**: typed-data digest, recovered signer, execution hash, policy outcome, timestamp, and evidence hash.
-7. **Read-only Sepolia verifier**: browser-only reconstruction of public transaction and receipt evidence from a public RPC endpoint.
-
-## Design claims vs non-claims
-
-| This repository claims | This repository does **not** claim |
-| --- | --- |
-| Verification of EIP-712 signed `PaymentIntent` envelopes with signer recovery, domain separation, integer-denominated amounts, and typed evidence. | Production wallet security, private-key custody, or transaction broadcasting. |
-| **Mechanism-level baseline comparisons** (policy gates, execution binding, replay state), computed from a shared deterministic fixture runner. | Any external product performance claim or end-to-end equivalence to Safe, Permit2, ZeroDev, or other mature systems. |
-| A deterministic adversarial fixture benchmark with fixed, reproducible numbers. | Production security, live-fund safety, or exhaustive coverage of the attack space. |
-| Read-only receipt reconstruction for Sepolia transactions. | Smart-account / [EIP-4337](https://eips.ethereum.org/EIPS/eip-4337) deployment, paymasters, session keys, or on-chain enforcement. |
-| A payer-scoped consume-once nonce store with optional SQLite durability (research-v2). | Distributed replay atomicity across replicas, coupling nonce consumption to on-chain execution, or production-grade durability guarantees. |
-
-## Benchmark results
-
-The included deterministic synthetic benchmark reports (see [docs/evaluation-methodology.md](docs/evaluation-methodology.md)):
-
-| Baseline (mechanism) | Attack block rate | Benign completion | Notes |
-| --- | ---: | ---: | --- |
-| `policy-gate-only` | 33% | 100% | Intent-time allowlists + ceiling + expiry; no intent→execution binding; no replay state. |
-| `smart-account-policy` | 44% | 100% | Execution-time allowlists + per-call spend limit; no pre-execution intent object; no authorization replay guard. |
-| `stateless-intent-execution-binding` | 67% | 100% | Scope binding + ceiling + expiry; no intent allowlists; no exact-amount binding; no replay state. |
-| `intentguard-full` | 100% | 100% | Policy + scope binding + exact-amount binding + process-local replay guard. |
-
-Ablation summary (relative to `intentguard-full`):
-
-| Ablation | Attack block rate | Delta vs full |
-| --- | ---: | ---: |
-| w/o execution binding | 44% | -56 pp |
-| w/o exact amount binding | 89% | -11 pp |
-| w/o replay guard | 89% | -11 pp |
-| w/o intent allowlists | 89% | -11 pp |
-
-These are deterministic fixture results, not live-chain security claims.
-
-## Live Sepolia verifier
-
-The frontend includes a read-only Sepolia verifier. Users can paste a transaction hash and optional expected sender, recipient, and ETH value. The verifier fetches the transaction and receipt through `VITE_SEPOLIA_RPC_URL` or the public fallback, then reconstructs:
-
-- network and receipt-status checks,
-- sender / recipient / value integrity checks when expected values are provided,
-- an evidence hash over transaction and receipt fields,
-- gas, fee, block, and confirmation metadata.
-
-No wallet is connected and no user data is persisted.
+Interpretation boundary: these profiles are mechanism-level control combinations implemented in this repository. They are not product-level scores for external systems, and PAACT-Core v1 is not a real-world attack-prevalence estimate.
 
 ## Reproducibility
 
-### Frontend
+### Frontend demo
 
 ```bash
 npm install
@@ -136,157 +83,75 @@ Optional public configuration:
 
 ```bash
 cp .env.example .env.local
-# edit VITE_SEPOLIA_RPC_URL if you want to use another public Sepolia RPC endpoint
+# edit VITE_SEPOLIA_RPC_URL if you want another public Sepolia RPC endpoint
 ```
 
-### Backend
+### Backend tests
 
 ```bash
 cd backend
 python -m pip install -r requirements-dev.txt
-HYPOTHESIS_MAX_EXAMPLES=1000 HYPOTHESIS_STATEFUL_EXAMPLES=200 HYPOTHESIS_STATEFUL_STEPS=25 python -m unittest
+HYPOTHESIS_MAX_EXAMPLES=1000 HYPOTHESIS_STATEFUL_EXAMPLES=200 HYPOTHESIS_STATEFUL_STEPS=25 python -m unittest discover -v
 PORT=8000 python main.py
 ```
 
-Replay store configuration (research-v2):
-
-- Default (process-local): `INTENTGUARD_NONCE_STORE=memory`
-- Durable across restarts: `INTENTGUARD_NONCE_STORE=sqlite` with `INTENTGUARD_NONCE_SQLITE_PATH=/path/to/intentguard_nonces.sqlite3`
-
-Example:
-
-```bash
-INTENTGUARD_NONCE_STORE=sqlite \
-INTENTGUARD_NONCE_SQLITE_PATH=/tmp/intentguard_nonces.sqlite3 \
-PORT=8000 python main.py
-```
-
-The API accepts browser requests from `http://localhost:5173` and `http://127.0.0.1:5173` by default. For another frontend origin, set the comma-separated `INTENTGUARD_ALLOWED_ORIGINS` environment variable explicitly.
-
-Cross-language EIP-712 vector:
-
-```bash
-npm run verify:eip712
-```
-
-PAACT-Core v1 corpus and baseline matrix (research-v3):
+### Regenerate PAACT-Core v1
 
 ```bash
 cd backend
 python generate_attack_corpus.py
 ```
 
-This deterministically regenerates `fixtures/paact-core-v1.jsonl` and the JSON/Markdown reports under `docs/research-v3/` from seed `20260916`. The corpus contains 920 attacks and 80 benign boundary cases; every mechanism profile receives the identical ordered cases.
+Generated outputs:
 
-### What is reproducible here
+- `fixtures/paact-core-v1.jsonl`
+- `docs/research-final/paact-core-v1-results.json`
+- `docs/research-final/paact-core-v1-results.md`
 
-- The deterministic fixture scenarios exposed by the frontend and backend.
-- The original 11-fixture benchmark and mechanism-level baseline comparison.
-- EIP-712 typed-data hashing and signer recovery against a shared TypeScript/Python golden vector.
-- An observed MetaMask `eth_signTypedData_v4` flow during a controlled local dashboard run: the first reviewed intent returned `AUTO_APPROVE`, while replaying the same signature returned `DENY` because the payer--nonce was already consumed (in-memory by default; optionally durable via SQLite in research-v2).
-- Property-based checks for signed-field immutability, signer identity, domain separation, execution drift, replay, and failure-state isolation, plus a `RuleBasedStateMachine` that generates valid, replayed, drifted, wrong-domain, post-signature-mutated, expired, and review-routed sequences while checking authorization--execution safety, at-most-once approval, and failure isolation after every transition. See [Signed-Intent Evaluation](docs/signed-intent-evaluation.md).
-- research-v2 overhead matrix (memory/SQLite; serial/threaded/spawned-process) and restart/thread/process at-most-once replay tests under `docs/research-v2/`.
-- research-v3 PAACT-Core v1: 1,000 fixed-seed cases across benign, recipient, amount, chain, asset, expiry, replay, policy, and compositional families; all four mechanism profiles are reported overall and by family/operator with 95% Wilson intervals.
-- The read-only Sepolia receipt verification workflow.
+## Replay-store configuration
 
-### What is deliberately not claimed
+By default, the demo uses in-memory replay state. To use the durable SQLite store:
 
-- Production wallet custody guarantees; the dashboard can request and verify `eth_signTypedData_v4` signatures, but it never sends transactions or handles private keys.
-- Multi-host/geo-distributed replay consensus or atomic coupling to an external wallet broadcast; research-v2 demonstrates at-most-once release for independent processes sharing one SQLite authority.
-- Live smart-account or on-chain enforcement.
-- Product-level equivalence to mature external payment or wallet systems.
-- Real-world attack prevalence or external-project superiority from PAACT-Core: it is a deterministic author-generated mutation corpus, not an observed-incident dataset or reproduction of named systems.
-
-## API overview
-
-- `GET /api` — service metadata.
-- `GET /api/v1/ping` — health check.
-- `GET /api/v1/demo/scenarios` — supported local fixture scenarios.
-- `POST /api/v1/demo/run` — run `normal`, `tampered`, or `replay`.
-- `POST /api/v1/signed-intents/validate` — recover and verify an EIP-712 signer, then apply policy, execution-binding, expiry, and replay checks.
-- `POST /api/v1/demo/reset` — reset the current replay state (memory or SQLite nonce store).
-- `GET /api/v1/evaluation` — run deterministic benchmark fixtures.
-- `GET /api/v1/about` — project metadata and attribution.
-
-OpenAPI docs are available at `/docs` when the backend is running.
-
-## Repository structure
-
-```text
-intentguard-pay-public/
-├── backend/
-│   ├── attack_corpus.py
-│   ├── bench_overhead.py
-│   ├── bench_overhead_matrix.py
-│   ├── eip712.py
-│   ├── generate_attack_corpus.py
-│   ├── intent_engine.py
-│   ├── main.py
-│   ├── nonce_store.py
-│   ├── requirements.txt
-│   ├── requirements-dev.txt
-│   ├── test_eip712.py
-│   ├── test_attack_corpus.py
-│   ├── test_intent_engine.py
-│   ├── test_nonce_store.py
-│   └── test_state_machine.py
-├── fixtures/
-│   ├── eip712-golden-vector.json
-│   └── paact-core-v1.jsonl
-├── scripts/
-│   └── verify-eip712-vector.mjs
-├── docs/
-│   ├── evaluation-methodology.md
-│   ├── research-context.md
-│   ├── signed-intent-evaluation.md
-│   ├── research-v2/
-│   │   ├── overhead_*.json
-│   │   ├── overhead_matrix.json
-│   │   └── overhead_matrix.md
-│   └── research-v3/
-│       ├── paact-core-v1.md
-│       ├── paact-core-v1-results.json
-│       └── paact-core-v1-results.md
-├── src/
-│   ├── App.tsx
-│   ├── main.tsx
-│   ├── components/
-│   │   ├── IntentGuardDashboard.tsx
-│   │   ├── LiveSepoliaVerifier.tsx
-│   │   └── SignedIntentDemo.tsx
-│   ├── lib/
-│   │   ├── api.ts
-│   │   ├── demo.ts
-│   │   ├── eip712.ts
-│   │   └── sepolia.ts
-│   └── routes/
-│       └── index.css
-├── .env.example
-├── .gitignore
-├── LICENSE
-├── THIRD_PARTY_NOTICES.md
-├── SECURITY.md
-├── README.md
-├── index.html
-├── package.json
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-└── vite.config.ts
+```bash
+export INTENTGUARD_NONCE_STORE=sqlite
+export INTENTGUARD_NONCE_SQLITE_PATH=/tmp/intentguard_nonces.sqlite3
+PORT=8000 python backend/main.py
 ```
 
-## Future work
+The SQLite implementation uses an atomic `(payer, nonce)` uniqueness constraint as the consume-as-commit point. Tests cover restart, thread, and spawned-process replay races under a shared SQLite database.
 
-- Harden the implemented review-and-sign flow with multi-wallet discovery, transaction simulation, accessibility testing, and production custody controls.
-- Replace the single-host SQLite registry with a shared transactional or consensus-backed nonce authority when deploying across independent replicas.
-- Integrate [EIP-4337](https://eips.ethereum.org/EIPS/eip-4337) smart accounts or on-chain policy modules for execution-time enforcement.
-- Connect wallet transaction simulation / human-readable review more tightly to the authorized envelope.
-- Extend the state-machine suite with coverage-guided calldata fuzzing, crash injection, and a larger external attack corpus.
+## What this project does not claim
 
-## Integrated IntentGuard components
+IntentGuard Pay does **not** claim:
 
-The repository presents structured intent, policy validation, execution matching, replay handling, receipt reconstruction, and evidence hashing as one IntentGuard Pay system. The benchmark decomposes that system only into neutral control profiles for ablation and causal comparison; it does not split the implementation into separately branded subprojects.
+- production wallet security;
+- private-key custody;
+- transaction broadcast or real fund movement;
+- real-world attack prevalence;
+- superiority over external products;
+- a community-standard benchmark;
+- distributed replay consensus;
+- full semantic calldata interpretation;
+- on-chain smart-account enforcement.
 
-## License
+It is a bounded research artifact for studying authorization preservation in agentic payments.
 
-MIT. See [LICENSE](LICENSE).
+## Repository map
+
+```text
+backend/
+  intent_engine.py             # deterministic authorization engine and API benchmark
+  eip712.py                    # signed PaymentIntent validation
+  nonce_store.py               # in-memory and SQLite nonce stores
+  attack_corpus.py             # PAACT-Core generator/evaluator
+  generate_attack_corpus.py    # corpus/result regeneration CLI
+  test_*.py                    # unit, property, state-machine, replay, and corpus tests
+fixtures/
+  paact-core-v1.jsonl          # fixed-seed corpus
+src/
+  components/                  # dashboard UI
+  lib/demo.ts                  # local self-contained demo/evaluation data
+  lib/eip712.ts                # TypeScript EIP-712 helpers
+docs/
+  research-final/              # PAACT-Core design and results
+```

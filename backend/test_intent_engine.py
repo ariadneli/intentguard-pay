@@ -36,10 +36,11 @@ class IntentEngineTest(unittest.TestCase):
         result = benchmark()
 
         # 1. Assert full mode performance
-        self.assertEqual(result["total_cases"], 11)
+        self.assertEqual(result["total_cases"], 1000)
         self.assertEqual(result["attack_block_rate"], 100)
         self.assertEqual(result["benign_completion_rate"], 100)
         self.assertEqual(result["false_rejection_rate"], 0)
+        self.assertEqual(result["schema_version"], "paact-core-v1")
 
         # 2. Assert baseline differentiation (mechanism-level, not project labels)
         comp_by_mode = {row["mode"]: row for row in result["baseline_comparison"]}

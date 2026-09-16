@@ -2,7 +2,7 @@
 
 ## Scope
 
-This evaluation is separate from the original 11-fixture mechanism benchmark. It tests the cryptographic authorization boundary added by the EIP-712 signed-intent path without changing the historical baseline numbers.
+This evaluation complements the PAACT-Core v1 mechanism benchmark. It tests the cryptographic authorization boundary added by the EIP-712 signed-intent path.
 
 ## EIP-712 boundary
 
@@ -56,7 +56,7 @@ HYPOTHESIS_MAX_EXAMPLES=1000 HYPOTHESIS_STATEFUL_EXAMPLES=200 HYPOTHESIS_STATEFU
 
 Observed on 2026-09-16:
 
-- 27 test methods passed in the research-v3 full suite, including the rule-based state machine and five corpus tests.
+- 27 test methods passed in the final research suite, including the rule-based state machine and five corpus tests.
 - 0 failures and 0 errors.
 - Runtime: 167.718 seconds in the recorded environment.
 - The TypeScript/Python golden-vector verification also passed.

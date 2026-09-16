@@ -16,8 +16,8 @@ Default seed: `20260916`.
 Generated artifacts:
 
 - `fixtures/paact-core-v1.jsonl` — 1,000 self-describing cases.
-- `docs/research-v3/paact-core-v1-results.json` — full overall/family/operator metrics.
-- `docs/research-v3/paact-core-v1-results.md` — compact comparison tables.
+- `docs/research-final/paact-core-v1-results.json` — full overall/family/operator metrics.
+- `docs/research-final/paact-core-v1-results.md` — compact comparison tables.
 
 The same seed and generator version produce byte-stable corpus ordering and content.
 

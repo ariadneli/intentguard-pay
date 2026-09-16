@@ -275,7 +275,7 @@ class IntentEngine:
 
         nonce_enabled = enabled_checks is None or "NONCE_UNUSED" in enabled_checks
 
-        # research-v2: consume-as-commit.
+        # Consume-as-commit replay guard.
         # If an intent is otherwise eligible for AUTO_APPROVE, we attempt to consume the payer-scoped
         # nonce as the final commit step. Failed consumption downgrades to DENY.
         critical_failure = any(not check.passed for check in checks)
@@ -466,7 +466,7 @@ class IntentEngine:
             ),
         ]
 
-        # research-v2: consume-as-commit.
+        # Consume-as-commit replay guard.
         # Only attempt nonce consumption when the request is otherwise eligible for AUTO_APPROVE.
         critical_failure = any(not check.passed for check in checks)
         eligible_for_auto = (not critical_failure) and (
@@ -973,20 +973,21 @@ def _evaluate_profile(
 
 
 def benchmark() -> Dict:
+    """Return the final submission evaluation summary over PAACT-Core v1."""
+
     started = time.perf_counter()
+
+    from attack_corpus import evaluate_corpus, generate_corpus
+
+    manifest, cases = generate_corpus()
+    corpus_result = evaluate_corpus(manifest, cases)
 
     baselines = []
     baseline_comparison = []
-
-    # Compute baseline results
+    full_summary = None
+    full_outcomes = None
     for baseline in BASELINE_DEFINITIONS:
         enabled = _resolve_check_codes(baseline["controls"])
-        consume_nonce = "NONCE_UNUSED" in enabled
-        summary, _ = _evaluate_profile(
-            enabled_checks=enabled,
-            state_model=baseline["state_model"],
-            consume_nonce=consume_nonce,
-        )
         baselines.append(
             {
                 "id": baseline["id"],
@@ -996,40 +997,48 @@ def benchmark() -> Dict:
                 "enabled_check_codes": sorted(enabled),
             }
         )
+        corpus_row = next(row for row in corpus_result["baseline_results"] if row["mode"] == baseline["id"])
+        overall = corpus_row["overall"]
         baseline_comparison.append(
             {
                 "mode": baseline["id"],
                 "label": baseline["label"],
-                **summary,
+                "attack_block_rate": overall["attack_block_rate"],
+                "benign_completion_rate": overall["benign_completion_rate"],
+                "false_rejection_rate": overall["false_rejection_rate"],
+                "blocked_attacks": overall["blocked_attacks"],
+                "total_attacks": overall["attacks"],
+                "attack_block_rate_wilson_95": overall["attack_block_rate_wilson_95"],
             }
         )
+        if baseline["id"] == "intentguard-full":
+            full_summary = overall
+            enabled_checks = _resolve_check_codes(baseline["controls"])
+            _, full_outcomes = _evaluate_profile(
+                enabled_checks=enabled_checks,
+                state_model=baseline["state_model"],
+                consume_nonce="NONCE_UNUSED" in enabled_checks,
+                fixtures=list(cases),
+            )
 
-    # Compute full IntentGuard (for outcomes + ablation deltas)
-    full = next(b for b in BASELINE_DEFINITIONS if b["id"] == "intentguard-full")
-    full_enabled = _resolve_check_codes(full["controls"])
-    full_consume_nonce = "NONCE_UNUSED" in full_enabled
-    full_summary, full_outcomes = _evaluate_profile(
-        enabled_checks=full_enabled,
-        state_model=full["state_model"],
-        consume_nonce=full_consume_nonce,
-    )
+    if full_summary is None or full_outcomes is None:
+        raise RuntimeError("intentguard-full baseline missing")
 
-    # Ablations
     ablations = []
     for ab in ABLATION_DEFINITIONS:
         enabled = _resolve_check_codes(ab["controls"])
-        consume_nonce = "NONCE_UNUSED" in enabled
         summary, _ = _evaluate_profile(
             enabled_checks=enabled,
-            state_model="process-local" if consume_nonce else "stateless",
-            consume_nonce=consume_nonce,
+            state_model="process-local" if "NONCE_UNUSED" in enabled else "stateless",
+            consume_nonce="NONCE_UNUSED" in enabled,
+            fixtures=list(cases),
         )
         ablations.append(
             {
                 "mode": ab["id"],
                 "label": ab["label"],
                 "attack_block_rate": summary["attack_block_rate"],
-                "delta_vs_full_pp": summary["attack_block_rate"] - full_summary["attack_block_rate"],
+                "delta_vs_full_pp": round(summary["attack_block_rate"] - full_summary["attack_block_rate"], 2),
                 "removed_control": ab["removed_control"],
             }
         )
@@ -1037,15 +1046,18 @@ def benchmark() -> Dict:
     elapsed_ms = round((time.perf_counter() - started) * 1000, 3)
 
     return {
-        "total_cases": len(FIXTURES),
+        "schema_version": manifest.schema_version,
+        "seed": manifest.seed,
+        "total_cases": manifest.total_cases,
         "attack_block_rate": full_summary["attack_block_rate"],
+        "attack_block_rate_wilson_95": full_summary["attack_block_rate_wilson_95"],
         "benign_completion_rate": full_summary["benign_completion_rate"],
         "false_rejection_rate": full_summary["false_rejection_rate"],
         "evaluation_time_ms": elapsed_ms,
         "methodology": {
-            "benchmark_type": "Deterministic synthetic fixtures",
+            "benchmark_type": "PAACT-Core v1 deterministic corpus",
             "profile_scope": "Mechanism-level control baselines (not upstream projects)",
-            "state_model": "In-memory engine; process-local replay state only when enabled",
+            "state_model": "Author-generated JSONL corpus; full profile uses payer-scoped consume-once replay state",
             "network_scope": "Sepolia domain signing and read-only receipt checks; no transaction broadcast",
         },
         "control_definitions": CONTROL_DEFINITIONS,
@@ -1054,9 +1066,9 @@ def benchmark() -> Dict:
         "ablations": ablations,
         "outcomes": full_outcomes,
         "limitations": [
-            "The deterministic benchmark remains intentionally small (11 fixtures) and does not cover every payment threat.",
-            "EIP-712 verification is implemented as a separate signed-intent path; the dashboard does not yet expose the wallet signing flow.",
-            "Replay guard is process-local; no persistent used-intent registry is provided.",
-            "Results are computed from local fixtures and property tests and should not be interpreted as external product scores.",
+            "PAACT-Core v1 is deterministic and author-generated; it is not a real-world attack prevalence estimate or community standard benchmark.",
+            "Mechanism profiles are evaluated under one runner and should not be interpreted as external product scores.",
+            "The live dashboard does not broadcast transactions, custody funds, or claim production wallet security.",
+            "Full semantic calldata interpretation, distributed replay consensus, and user comprehension studies remain future work.",
         ],
     }

@@ -87,12 +87,12 @@ def main() -> None:
     parser.add_argument(
         "--report-json",
         type=Path,
-        default=Path(__file__).parent.parent / "docs" / "research-v3" / "paact-core-v1-results.json",
+        default=Path(__file__).parent.parent / "docs" / "research-final" / "paact-core-v1-results.json",
     )
     parser.add_argument(
         "--report-md",
         type=Path,
-        default=Path(__file__).parent.parent / "docs" / "research-v3" / "paact-core-v1-results.md",
+        default=Path(__file__).parent.parent / "docs" / "research-final" / "paact-core-v1-results.md",
     )
     args = parser.parse_args()
 

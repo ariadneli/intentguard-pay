@@ -1,4 +1,4 @@
-"""Overhead experiment matrix for IntentGuard Pay (research-v2).
+"""Overhead experiment matrix for IntentGuard Pay (final research).
 
 Goal: strengthen evidence beyond a single microbenchmark snapshot.
 
@@ -7,7 +7,7 @@ This script measures IntentEngine.validate_signed only:
 - Excludes: signature creation (only for input generation), wallet UI, and network/RPC I/O.
 
 Example:
-  python3 backend/bench_overhead_matrix.py --out-dir docs/research-v2
+  python3 backend/bench_overhead_matrix.py --out-dir docs/research-final
 
 Notes:
 - The concurrency experiments use (a) multiple threads and (b) independently
@@ -286,7 +286,7 @@ def _run_sqlite_multiprocess(*, n_total: int, workers: int, sqlite_path: str) ->
 
 def to_markdown(rows: list[MatrixRow]) -> str:
     lines = []
-    lines.append("# research-v2 · overhead experiment matrix\n")
+    lines.append("# final research · overhead experiment matrix\n")
     lines.append("> Timed region: `IntentEngine.validate_signed` only. Signing and all wallet/RPC I/O are excluded.\n")
     lines.append("\n")
     lines.append("| Config | n | Concurrency | Denies | Mean (ms) | p50 (ms) | p95 (ms) | Throughput (req/s) |")
@@ -313,7 +313,7 @@ def to_markdown(rows: list[MatrixRow]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out-dir", default="docs/research-v2")
+    parser.add_argument("--out-dir", default="docs/research-final")
     parser.add_argument("--n", type=int, default=300)
     parser.add_argument("--concurrency", type=int, default=4)
     parser.add_argument("--n-concurrent", type=int, default=400)

@@ -89,7 +89,7 @@ async def get_scenarios():
             {
                 "id": "replay",
                 "title": "Replay attempt",
-                "description": "A process-local nonce guard prevents the same intent from paying twice.",
+                "description": "A consume-once nonce guard prevents the same signed intent from paying twice.",
                 "tone": "amber",
             },
         ]
@@ -132,19 +132,19 @@ async def get_about():
             "Can deterministic intent validation prevent unauthorized agentic payments "
             "without blocking legitimate autonomy?"
         ),
-        "what_is_scored": "Mechanism-level control baselines computed from the local fixture suite.",
-        "what_is_not_scored": "External product performance or any live-chain deployment claims.",
+        "what_is_scored": "Mechanism-level control baselines computed from PAACT-Core v1.",
+        "what_is_not_scored": "External product performance, real-world attack prevalence, or live-chain deployment claims.",
         "integrated_components": [
             "EIP-712 signed payment-intent envelope",
             "Typed-data digest reconstruction and signer recovery",
             "Deterministic policy validation",
             "Intent–execution scope and exact-amount binding",
-            "Process-local consume-once replay state",
-            "Receipt reconstruction and evidence hashing",
+            "Payer-scoped consume-once replay state",
+            "PAACT-Core v1 mutation corpus and evidence hashing",
         ],
         "project_contribution": (
             "Payment-specific threat model, cross-layer intent–execution binding, "
-            "process-local replay guard, adversarial fixtures, ablations, and receipt evidence."
+            "mechanism-level baseline matrix, PAACT-Core corpus, durable replay tests, and receipt evidence."
         ),
     }
 

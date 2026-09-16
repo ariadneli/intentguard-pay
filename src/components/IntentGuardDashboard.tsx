@@ -269,9 +269,9 @@ export default function IntentGuardDashboard() {
 
         <div className="research-note">
           <strong>IntentGuard gap:</strong> EIP-712 signer recovery +
-          deterministic policy + execution match + ephemeral replay state.
-          Persistent nonce storage, smart-account enforcement, and on-chain
-          modules remain future work.
+          deterministic policy + exact execution binding + consume-once replay
+          state. PAACT-Core v1 evaluates 1,000 deterministic corpus cases under
+          the same mechanism-level runner.
         </div>
       </section>
 
@@ -536,13 +536,13 @@ export default function IntentGuardDashboard() {
               <ShieldCheck size={20} />
               <span>Attack block rate</span>
               <strong>{evaluation.attack_block_rate}%</strong>
-              <small>9 / 9 adversarial cases</small>
+              <small>920 / 920 adversarial cases</small>
             </article>
             <article>
               <Zap size={20} />
               <span>Benign completion</span>
               <strong>{evaluation.benign_completion_rate}%</strong>
-              <small>2 / 2 legitimate intents</small>
+              <small>80 / 80 benign boundaries</small>
             </article>
             <article>
               <Gauge size={20} />
@@ -645,7 +645,7 @@ export default function IntentGuardDashboard() {
             <div className="panel-title">
               <div>
                 <Blocks size={18} />
-                <span>Fixture outcomes</span>
+                <span>Corpus family outcomes</span>
               </div>
               <MiniTag>{evaluation.total_cases} CASES</MiniTag>
             </div>
