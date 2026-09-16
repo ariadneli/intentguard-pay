@@ -198,7 +198,7 @@ export default function IntentGuardDashboard() {
             </div>
             <div>
               <span>Fixtures</span>
-              <strong>9 attack / 11 total</strong>
+              <strong>920 attack / 1,000 total</strong>
             </div>
             <div>
               <span>Evidence</span>
